@@ -1,0 +1,111 @@
+<?php
+
+/**
+ * Implements hook_help().
+ */
+function design_patterns_help() {
+	
+}
+
+/**
+ * Implements hook_menu().
+ */
+function design_patterns_menu() {
+	$items['patterns'] = array(
+		'title' => 'Design patterns',
+		'page callback' => 'system_admin_menu_block_page',
+		'access callback' => 'user_is_logged_in',
+		'file' => 'system.admin.inc',
+		'file path' => drupal_get_path('module', 'system')
+	);
+	$items['patterns/observer'] = array(
+		'title' => 'The Observer pattern',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('design_patterns_observer_notify_form'),
+		'access callback' => 'user_is_logged_in',
+		'file' => 'design_patterns.pages.inc',
+		'weight' => 1
+  );
+	$items['patterns/observer/with-mediator'] = array(
+		'title' => 'The Observer pattern with Mediator',
+		'page callback' => 'design_patterns_observer_mediator_page',
+		'access callback' => 'user_is_logged_in',
+		'file' => 'design_patterns.inc',
+		'weight' => 1
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function design_patterns_module_implements_alter(&$implementations, $hook) {
+	if ($hook == 'design_patterns_observer_notify') {
+		foreach ($implementations as $module => $group) {
+			unset ($implementations[$module]);
+		}
+		// Moony first
+		$implementations['system'] = FALSE;
+		// Prongs next
+		$implementations['user'] = FALSE;
+		// Padfoot goes third
+		$implementations['node'] = FALSE;
+		// Last comes Wormtail, the traitor
+		$implementations['field'] = FALSE;
+	}
+}
+
+/**
+ * Gets the message to be shown on opening the Marauder's map based on the implementing module.
+ *
+ * @param string $module
+ *   Name of the module implementing hook_design_patterns_observer_notify(). 
+ */
+function design_patterns_get_observer_message_on_open_map($module) {
+	switch ($module) {
+		case 'system':
+		  return t('Mr. Moony presents his compliments to Professor Snape and begs him to keep his abnormally large nose out of other people\'s business.');
+		case 'user':
+		  return t('Mr. Prongs agrees with Mr. Moony and would like to add that Professor Snape is an ugly git.');
+		case 'node':
+		  return t('Mr. Padfoot would like to register his astonishment that an idiot like that ever became a Professor.');
+		case 'field':
+		  return t('Mr. Wormtail bids Professor Snape good day, and advises him to wash his hair, the slime-ball.');
+	}
+}
+
+/**
+ * Implements hook_design_patterns_observer_notify().
+ */
+function system_design_patterns_observer_notify($event) {
+	if ($event == 'open_map') {
+		drupal_set_message(design_patterns_get_observer_message_on_open_map('system'));
+	}
+}
+
+/**
+ * Implements hook_design_patterns_observer_notify().
+ */
+function user_design_patterns_observer_notify($event) {
+	if ($event == 'open_map') {
+		drupal_set_message(design_patterns_get_observer_message_on_open_map('user'));
+	}
+}
+
+/**
+ * Implements hook_design_patterns_observer_notify().
+ */
+function node_design_patterns_observer_notify($event) {
+	if ($event == 'open_map') {
+		drupal_set_message(design_patterns_get_observer_message_on_open_map('node'));
+	}
+}
+
+/**
+ * Implements hook_design_patterns_observer_notify().
+ */
+function field_design_patterns_observer_notify($event) {
+	if ($event == 'open_map') {
+		drupal_set_message(design_patterns_get_observer_message_on_open_map('field'));
+	}
+}

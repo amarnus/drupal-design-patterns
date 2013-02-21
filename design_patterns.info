@@ -1,0 +1,8 @@
+name = Drupal Design Patterns
+description = Example code to demonstrate the design patterns on Drupal
+version = 7.x-0.1
+core = 7.x
+
+authors[] = Amarnath Ravikumar <amarnus@gmail.com>
+
+files[] = design_patterns.inc
