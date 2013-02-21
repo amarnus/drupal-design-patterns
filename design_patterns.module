@@ -1,13 +1,6 @@
 <?php
 
 /**
- * Implements hook_help().
- */
-function design_patterns_help() {
-	
-}
-
-/**
  * Implements hook_menu().
  */
 function design_patterns_menu() {
